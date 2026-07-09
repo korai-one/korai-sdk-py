@@ -1,0 +1,19 @@
+# openapi-python-client config — generates the typed transport core
+# into src/korai/_generated from the single source of truth
+# (../../specs/openapi.yaml). The hand-written ergonomic layer
+# (src/korai/{auth,llm,...}, streaming helpers, tool-runner) imports
+# from this generated core; _generated/ is never edited by hand.
+# Regenerate with `make gen` (creates .venv, installs the generator).
+package_name_override: _generated
+use_path_prefixes_for_title_model_names: false
+# Public SDK surface only: openapi-python-client 0.29 has NO endpoint/path/tag
+# filtering, so the Makefile points --path at the DERIVED public spec
+# (specs/openapi.public.yaml, built by openapi-format — see scripts/codegen.sh),
+# which already excludes every `x-internal: true` operation.
+#
+# Disable the generator's built-in post-hooks: they shell out to a `ruff` found
+# on PATH, so output depends on whether/which ruff is installed there — the
+# source of the formatting churn we hit. The Makefile instead runs a PINNED ruff
+# via the venv (python -m ruff) with the same args the generator would use, so
+# the committed _generated diff is reproducible on any machine.
+post_hooks: []
